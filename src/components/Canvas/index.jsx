@@ -103,7 +103,7 @@ const FlowCanvas = () => {
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
-       <ReactFlow
+      <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

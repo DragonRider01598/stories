@@ -6,12 +6,12 @@ import { FaTrash } from 'react-icons/fa';
 const Card = (props) => {
   const { id } = props;
   let cardTitle, cardText = '';
-  if (props.data){
+  if (props.data) {
     cardText = props.data.cardText;
-    cardTitle = props.data.cardTitle ; 
-    
+    cardTitle = props.data.cardTitle;
+
   }
-  const intro = props.type == 'introNode';
+  const intro = props.type === 'introNode';
   const { setNodes, setEdges } = useContext(FlowContext);
   const [title, setTitle] = useState(cardTitle);
   const [text, setText] = useState(cardText);
@@ -23,10 +23,10 @@ const Card = (props) => {
   };
 
   useEffect(() => {
-    setNodes((nds) => 
+    setNodes((nds) =>
       nds.map((node) =>
         node.id === id
-          ? { ...node, data: {cardTitle: title, cardText: text} }
+          ? { ...node, data: { cardTitle: title, cardText: text } }
           : node
       )
     )
