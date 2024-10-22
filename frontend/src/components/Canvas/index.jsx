@@ -3,6 +3,7 @@ import ReactFlow, { Controls, Background, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { FlowProvider, FlowContext } from '../../context/FlowContext';
 import Card from './components/Card';
+import Navbar from '../Navbar';
 
 const nodeTypes = {
   introNode: (nodeProps) => <Card {...nodeProps} />,
@@ -25,7 +26,7 @@ const FlowCanvas = () => {
   };
 
   const addNode = (additionalProps = {}) => {
-    const newNode = nodes.length == 0 ? {
+    const newNode = nodes.length === 0 ? {
       id: `0`,
       type: 'introNode',
       position: { x: 300, y: 169 },
@@ -99,10 +100,11 @@ const FlowCanvas = () => {
 
   return (
     <div
-      className='relative w-screen h-screen'
+      className="relative w-screen h-screen overflow-hidden"
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
+      <Navbar />
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -114,7 +116,7 @@ const FlowCanvas = () => {
         snapGrid={[20, 20]}
         defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
       >
-        <Controls />
+        <Controls className="top-1 h-0"/>
         <div className="absolute top-4 right-4 z-10 flex flex-row space-x-2">
           <button
             onClick={() => addNode()}

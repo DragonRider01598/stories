@@ -38,7 +38,7 @@ userSchema.methods.comparePassword = function (candidatePassword) {
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id, username: this.username }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '5h',
   });
   return token;
 };
