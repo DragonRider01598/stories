@@ -1,26 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState , useCallback} from 'react';
 import { Handle } from 'reactflow';
 import { FlowContext } from '../../../context/FlowContext';
 import { FaTrash } from 'react-icons/fa';
 
 const Card = (props) => {
   const { id } = props;
-  let cardTitle, cardText = '';
-  if (props.data) {
-    cardText = props.data.cardText;
-    cardTitle = props.data.cardTitle;
-
-  }
   const intro = props.type === 'introNode';
-  const { setNodes, setEdges } = useContext(FlowContext);
+  const { nodes, setNodes, edges, setEdges, setSelected } = useContext(FlowContext);
+
+  let cardTitle = props.data?.cardTitle || '';
+  let cardText = props.data?.cardText || '';
+  
   const [title, setTitle] = useState(cardTitle);
   const [text, setText] = useState(cardText);
-
 
   const deleteNode = (nodeId) => {
     setNodes((nds) => nds.filter((node) => node.id !== nodeId));
     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
   };
+
+  const deleteConnectedEdges = (handleType) => {
+    setEdges((eds) => eds.filter((edge) => {
+      if (handleType === 'top') {
+        return edge.target !== id;
+      } else {
+        return edge.source !== id;
+      }
+    }));
+  };
+
+  const handleBottomEdgeLimit = useCallback(() => {
+    setEdges((eds) => {
+      const connectedEdges = eds.filter((edge) => edge.source === id);
+      console.log(connectedEdges)
+      if (connectedEdges.length > 4) {
+        return eds.filter((edge) => edge.source !== id || connectedEdges.indexOf(edge) < 4);
+      }
+      return eds;
+    });
+  }, [setEdges, id]);
 
   useEffect(() => {
     setNodes((nds) =>
@@ -29,8 +47,12 @@ const Card = (props) => {
           ? { ...node, data: { cardTitle: title, cardText: text } }
           : node
       )
-    )
-  }, [text, title, setNodes, id]);
+    );
+  }, [text, title, setNodes, id, setSelected]);
+
+  useEffect(() => {
+    handleBottomEdgeLimit();
+  }, [edges, id, handleBottomEdgeLimit]);
 
   return (
     <div className="relative max-h-96 py-3 px-6 pr-8 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out">
@@ -38,6 +60,7 @@ const Card = (props) => {
         <Handle
           type="target"
           position="top"
+          onClick={() => deleteConnectedEdges('top')}
           style={{
             width: 20,
             height: 20,
@@ -54,6 +77,7 @@ const Card = (props) => {
       <Handle
         type="source"
         position="bottom"
+        onClick={() => deleteConnectedEdges('bottom')}
         style={{
           width: 20,
           height: 20,
@@ -66,7 +90,7 @@ const Card = (props) => {
           transform: 'translateX(-50%)',
         }}
       />
-
+  
       <div
         className="w-full min-w-60 max-w-96 max-h-16 min-h-8 outline-none break-words font-semibold text-lg text-gray-900 border-b border-gray-300 pb-2 mb-2 overflow-y-auto nodrag cursor-text z-10"
         contentEditable
@@ -74,6 +98,11 @@ const Card = (props) => {
         onFocus={(e) => {
           if (e.target.textContent === (intro ? 'Enter your Story Title here' : 'Enter your Title here')) {
             e.target.textContent = '';
+          }
+  
+          const currentNode = nodes.find((n) => n.id === id);
+          if (currentNode) {
+            setSelected({ x: currentNode.position.x, y: currentNode.position.y });
           }
         }}
         onBlur={(e) => {
@@ -86,8 +115,7 @@ const Card = (props) => {
       >
         {title || (intro ? 'Enter your Story Title here' : 'Enter your Title here')}
       </div>
-
-
+  
       <div
         className="w-full min-w-60 max-w-96 max-h-80 min-h-16 outline-none break-words text-gray-700 mt-1 text-sm leading-relaxed overflow-y-auto nodrag cursor-text"
         contentEditable
@@ -95,6 +123,11 @@ const Card = (props) => {
         onFocus={(e) => {
           if (e.target.textContent === 'Add your text here...') {
             e.target.textContent = '';
+          }
+  
+          const currentNode = nodes.find((n) => n.id === id);
+          if (currentNode) {
+            setSelected({ x: currentNode.position.x, y: currentNode.position.y });
           }
         }}
         onBlur={(e) => {
@@ -107,7 +140,7 @@ const Card = (props) => {
         dangerouslySetInnerHTML={{ __html: text || 'Add your text here...' }}
       >
       </div>
-
+  
       {!intro && (
         <div
           onClick={() => deleteNode(id)}

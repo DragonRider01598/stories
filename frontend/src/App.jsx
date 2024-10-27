@@ -7,6 +7,7 @@ import Signup from "./components/Auth/signup";
 import Logout from './components/Auth/logout';
 import { AuthContext } from './context/AuthContext';
 import About from './components/About';
+import UserFlow from './components/UserFlow';
 
 const App = () => {
   const { isLogged } = useContext(AuthContext);
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/logout" element={<Logout />} /> {/* Public Route */}
         <Route path="/canvas" element={<Canvas />} /> {/* Public Route */}
         <Route path="/about" element={<About />} /> {/* Public Route */}
+        <Route path="/read" element={<UserFlow />} /> {/* Public Route */}
         {/* <Route 
           path="/dashboard" 
           element={<ProtectedRoute element={<Dashboard />} />} 

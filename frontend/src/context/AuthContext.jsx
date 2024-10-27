@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
      };
  
      authenticateUser();
-   }, []);
+   }, [username]);
 
   return (
     <AuthContext.Provider

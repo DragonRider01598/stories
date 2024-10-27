@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactFlow, { Controls, Background, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { FlowProvider, FlowContext } from '../../context/FlowContext';
@@ -19,7 +19,8 @@ const Canvas = () => {
 };
 
 const FlowCanvas = () => {
-  const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange } = useContext(FlowContext);
+  const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange, selected, setSelected } = useContext(FlowContext);
+  const [showOptions, setShowOptions] = useState(false);
 
   const onConnect = (params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -34,9 +35,10 @@ const FlowCanvas = () => {
     } : {
       id: `${nodes.length + 1}`,
       type: 'buttonNode',
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      position: { x: selected.x + 200, y: selected.y + 100 },
       ...additionalProps,
     };
+    setSelected((positions) => ({ x: positions.x + 100, y: positions.y + 100 }));
     setNodes((nds) => nds.concat(newNode));
   };
 
@@ -116,26 +118,36 @@ const FlowCanvas = () => {
         snapGrid={[20, 20]}
         defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
       >
-        <Controls className="top-1 h-0"/>
-        <div className="absolute top-4 right-4 z-10 flex flex-row space-x-2">
+        <Controls className="top-1 h-0" />
+        <div className="absolute top-4 right-4 z-10 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
           <button
-            onClick={() => addNode()}
-            className="px-6 py-2 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out"
+            onClick={() => setShowOptions(!showOptions)}
+            className="md:hidden px-6 py-2 bg-gray-800 text-white rounded shadow-lg hover:bg-gray-500 transition duration-200 ease-in-out"
           >
-            Add Node
+            Options
           </button>
-          <button
-            onClick={onDownload}
-            className="px-6 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 transition duration-200 ease-in-out"
-          >
-            Download Story
-          </button>
-          <button
-            onClick={onUpload}
-            className="px-6 py-2 bg-yellow-600 text-white rounded shadow-lg hover:bg-yellow-700 transition duration-200 ease-in-out"
-          >
-            Upload Story
-          </button>
+
+          {/* Buttons are hidden by default on mobile and shown when showOptions is true */}
+          <div className={`${showOptions ? 'flex' : 'hidden'} md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2`}>
+            <button
+              onClick={() => addNode()}
+              className="px-6 py-2 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out"
+            >
+              Add Node
+            </button>
+            <button
+              onClick={onDownload}
+              className="px-6 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 transition duration-200 ease-in-out"
+            >
+              Download Story
+            </button>
+            <button
+              onClick={onUpload}
+              className="px-6 py-2 bg-yellow-600 text-white rounded shadow-lg hover:bg-yellow-700 transition duration-200 ease-in-out"
+            >
+              Upload Story
+            </button>
+          </div>
         </div>
         <Background />
       </ReactFlow>

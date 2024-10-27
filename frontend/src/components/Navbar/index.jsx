@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AuthButtons from './components/AuthButtons'
 
-const Navbar = () => {
+const Navbar = ({className}) => {
    const [isOpen, setIsOpen] = useState(false);
 
    const toggleMenu = () => {
@@ -15,7 +15,7 @@ const Navbar = () => {
    ];
 
    return (
-      <nav className="bg-gray-800 text-white">
+      <nav className={`bg-gray-800 text-white ${className}`}>
          <div className="mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex h-16">
                <div className="flex items-center">
