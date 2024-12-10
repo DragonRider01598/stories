@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import ReactFlow, { Controls, Background, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { FlowProvider, FlowContext } from '../../context/FlowContext';
+import { AuthContext } from '../../context/AuthContext';
 import Card from './components/Card';
 import Navbar from '../Navbar';
 
@@ -21,6 +22,7 @@ const Canvas = () => {
 const FlowCanvas = () => {
   const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange, selected, setSelected } = useContext(FlowContext);
   const [showOptions, setShowOptions] = useState(false);
+  const { isLogged } = useContext(AuthContext);
 
   const onConnect = (params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -61,7 +63,7 @@ const FlowCanvas = () => {
     URL.revokeObjectURL(url);
   };
 
-  const handleFileUpload = (file) => {
+  const handleFileLoad = (file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target.result;
@@ -82,27 +84,62 @@ const FlowCanvas = () => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (file) {
-      handleFileUpload(file);
+      handleFileLoad(file);
     }
   };
 
-  const onUpload = () => {
+  const onLoad = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.story';
     input.onchange = (event) => {
       const file = event.target.files[0];
       if (file) {
-        handleFileUpload(file);
+        handleFileLoad(file);
       }
     };
     input.click();
   };
 
+  const onUpload = async () => {
+    if (isLogged) {
+      let title = prompt('Please provide a title to your story');
+      let data = {
+        nodes: nodes.map((node) => ({
+          id: node.id,
+          data: node.data,
+        })),
+        edges: edges.map(({ source, target, id }) => ({
+          source,
+          target,
+          id,
+        })),
+      };
+      data['title'] = title;
+
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/story/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        alert('Story was successfully uploaded');
+      } else {
+        let obj = await response.json();
+        alert(obj.message);
+      }
+    } else {
+      alert('You are not logged in');
+    }
+  };
 
   return (
     <div
-      className="relative w-screen h-screen overflow-hidden"
+      className="relative w-screen h-screen overflow-hidden bg-gray-900"
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
@@ -122,7 +159,7 @@ const FlowCanvas = () => {
         <div className="absolute top-4 right-4 z-10 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
           <button
             onClick={() => setShowOptions(!showOptions)}
-            className="md:hidden px-6 py-2 bg-gray-800 text-white rounded shadow-lg hover:bg-gray-500 transition duration-200 ease-in-out"
+            className="md:hidden px-6 py-2 bg-gray-800 text-white rounded shadow-lg hover:bg-gray-700 transition duration-200 ease-in-out"
           >
             Options
           </button>
@@ -131,7 +168,7 @@ const FlowCanvas = () => {
           <div className={`${showOptions ? 'flex' : 'hidden'} md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2`}>
             <button
               onClick={() => addNode()}
-              className="px-6 py-2 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out"
+              className="px-6 py-2 bg-teal-600 text-white rounded shadow-lg hover:bg-teal-700 transition duration-200 ease-in-out"
             >
               Add Node
             </button>
@@ -142,8 +179,14 @@ const FlowCanvas = () => {
               Download Story
             </button>
             <button
-              onClick={onUpload}
+              onClick={onLoad}
               className="px-6 py-2 bg-yellow-600 text-white rounded shadow-lg hover:bg-yellow-700 transition duration-200 ease-in-out"
+            >
+              Load Story
+            </button>
+            <button
+              onClick={onUpload}
+              className="px-6 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 transition duration-200 ease-in-out"
             >
               Upload Story
             </button>
@@ -152,7 +195,6 @@ const FlowCanvas = () => {
         <Background />
       </ReactFlow>
     </div>
-
   );
 };
 

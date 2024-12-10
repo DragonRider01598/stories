@@ -1,14 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { useNodesState, useEdgesState } from 'reactflow';
 
 export const FlowContext = createContext();
 
-export const useFlow = () => useContext(FlowContext);
-
 export const FlowProvider = ({ children }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [ selected, setSelected ] = useState({ x: 300, y: 169 });
+  const [selected, setSelected] = useState({ x: 300, y: 169 });
 
   return (
     <FlowContext.Provider
@@ -20,7 +18,7 @@ export const FlowProvider = ({ children }) => {
           edges,
           setEdges,
           onEdgesChange,
-          selected, 
+          selected,
           setSelected
         }}>
       {children}

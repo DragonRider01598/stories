@@ -13,13 +13,13 @@ const Logout = () => {
           method: 'DELETE',
           credentials: 'include',
         });
-  
+
         if (response.ok) {
           const timeoutId = setTimeout(() => {
             setIsLogged(false);
             navigate('/');
           }, 1000);
-  
+
           return () => clearTimeout(timeoutId);
         } else {
           console.error('Failed to log out');
@@ -28,16 +28,16 @@ const Logout = () => {
         console.error('Error during logout:', error);
       }
     };
-  
-    logoutUser(); 
+
+    logoutUser();
   }, [navigate, setIsLogged]);
-  
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">You have logged out</h2>
-        <p className="text-center">Redirecting to login page...</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-400">You have logged out</h2>
+        <p className="text-center text-gray-400">Redirecting to login page...</p>
       </div>
     </div>
   );

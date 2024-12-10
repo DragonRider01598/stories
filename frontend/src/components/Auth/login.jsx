@@ -6,7 +6,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
-  const { isLogged, setIsLogged } = useContext(AuthContext);
+  const { setIsLogged } = useContext(AuthContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,30 +45,30 @@ const Login = () => {
   }, [email, password])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <a href="/" className="absolute top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition duration-200 ease-in-out">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <a href="/" className="absolute top-4 left-4 bg-blue-800 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-900 transition duration-200 ease-in-out">
         Go Back
       </a>
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-400">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+            <label className="block text-gray-400 text-sm font-bold mb-2">Email</label>
             <input
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md border-0 focus:outline-none bg-gray-700 text-gray-300"
               placeholder="Enter your email"
             />
           </div>
           <div className="mb-2">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+            <label className="block text-gray-400 text-sm font-bold mb-2">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md border-0 focus:outline-none bg-gray-700 text-gray-300"
               placeholder="Enter your password"
             />
           </div>
@@ -77,13 +77,13 @@ const Login = () => {
               Incorrect username or password.
             </div>
           )}
-          <div className="text-sm text-gray-600 text-center mb-2">
+          <div className="text-sm text-gray-400 text-center mb-2">
             Do not have an Account?
             <a href="/signup" className="text-blue-500 hover:underline ml-1">Signup</a>
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            className="w-full bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-900 transition duration-200"
           >
             Login
           </button>

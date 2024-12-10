@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AuthButtons from './components/AuthButtons'
 
-const Navbar = ({className}) => {
+const Navbar = ({ className }) => {
    const [isOpen, setIsOpen] = useState(false);
 
    const toggleMenu = () => {

@@ -49,13 +49,12 @@ const getStoryById = async (req, res) => {
 };
 
 const getRandomStories = async (req, res) => {
-   const { page = 1, limit = 20 } = req.query;
+   const { page = 1, limit = 9 } = req.query;
 
    try {
       const skip = (page - 1) * limit;
 
       const stories = await Story.aggregate([
-         { $sample: { size: parseInt(limit, 10) } },
          {
             $lookup: {
                from: 'users',
@@ -117,7 +116,8 @@ const getRandomStories = async (req, res) => {
          intro: story.intro,
       }));
 
-      res.status(200).json(formattedStories);
+      const count = await Story.countDocuments();
+      res.status(200).json({ stories: formattedStories, totalStories: count });
    } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving stories', error: error.message });

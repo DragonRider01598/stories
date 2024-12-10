@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState , useCallback} from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Handle } from 'reactflow';
 import { FlowContext } from '../../../context/FlowContext';
 import { FaTrash } from 'react-icons/fa';
@@ -10,7 +10,7 @@ const Card = (props) => {
 
   let cardTitle = props.data?.cardTitle || '';
   let cardText = props.data?.cardText || '';
-  
+
   const [title, setTitle] = useState(cardTitle);
   const [text, setText] = useState(cardText);
 
@@ -32,7 +32,6 @@ const Card = (props) => {
   const handleBottomEdgeLimit = useCallback(() => {
     setEdges((eds) => {
       const connectedEdges = eds.filter((edge) => edge.source === id);
-      console.log(connectedEdges)
       if (connectedEdges.length > 4) {
         return eds.filter((edge) => edge.source !== id || connectedEdges.indexOf(edge) < 4);
       }
@@ -55,7 +54,7 @@ const Card = (props) => {
   }, [edges, id, handleBottomEdgeLimit]);
 
   return (
-    <div className="relative max-h-96 py-3 px-6 pr-8 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out">
+    <div className="relative max-h-96 py-3 px-6 pr-8 border rounded-lg bg-dark-900 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out">
       {!intro && (
         <Handle
           type="target"
@@ -65,7 +64,7 @@ const Card = (props) => {
             width: 20,
             height: 20,
             borderRadius: '50%',
-            backgroundColor: '#AFAFAF',
+            backgroundColor: '#777',
             zIndex: -2,
             position: 'absolute',
             top: -10,
@@ -82,7 +81,7 @@ const Card = (props) => {
           width: 20,
           height: 20,
           borderRadius: '50%',
-          backgroundColor: '#AFAFAF',
+          backgroundColor: '#777',
           zIndex: -2,
           position: 'absolute',
           bottom: -10,
@@ -90,16 +89,16 @@ const Card = (props) => {
           transform: 'translateX(-50%)',
         }}
       />
-  
+
       <div
-        className="w-full min-w-60 max-w-96 max-h-16 min-h-8 outline-none break-words font-semibold text-lg text-gray-900 border-b border-gray-300 pb-2 mb-2 overflow-y-auto nodrag cursor-text z-10"
+        className="w-full min-w-60 max-w-96 max-h-16 min-h-8 outline-none break-words font-semibold text-lg text-white border-b border-dark-700 pb-2 mb-2 overflow-y-auto nodrag cursor-text z-10"
         contentEditable
         suppressContentEditableWarning
         onFocus={(e) => {
           if (e.target.textContent === (intro ? 'Enter your Story Title here' : 'Enter your Title here')) {
             e.target.textContent = '';
           }
-  
+
           const currentNode = nodes.find((n) => n.id === id);
           if (currentNode) {
             setSelected({ x: currentNode.position.x, y: currentNode.position.y });
@@ -115,16 +114,16 @@ const Card = (props) => {
       >
         {title || (intro ? 'Enter your Story Title here' : 'Enter your Title here')}
       </div>
-  
+
       <div
-        className="w-full min-w-60 max-w-96 max-h-80 min-h-16 outline-none break-words text-gray-700 mt-1 text-sm leading-relaxed overflow-y-auto nodrag cursor-text"
+        className="w-full min-w-60 max-w-96 max-h-80 min-h-16 outline-none break-words text-gray-300 mt-1 text-sm leading-relaxed overflow-y-auto nodrag cursor-text"
         contentEditable
         suppressContentEditableWarning
         onFocus={(e) => {
           if (e.target.textContent === 'Add your text here...') {
             e.target.textContent = '';
           }
-  
+
           const currentNode = nodes.find((n) => n.id === id);
           if (currentNode) {
             setSelected({ x: currentNode.position.x, y: currentNode.position.y });
@@ -140,7 +139,7 @@ const Card = (props) => {
         dangerouslySetInnerHTML={{ __html: text || 'Add your text here...' }}
       >
       </div>
-  
+
       {!intro && (
         <div
           onClick={() => deleteNode(id)}

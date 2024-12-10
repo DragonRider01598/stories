@@ -7,7 +7,7 @@ import Signup from "./components/Auth/signup";
 import Logout from './components/Auth/logout';
 import { AuthContext } from './context/AuthContext';
 import About from './components/About';
-import UserFlow from './components/UserFlow';
+import Read from './components/Read';
 
 const App = () => {
   const { isLogged } = useContext(AuthContext);
@@ -16,20 +16,20 @@ const App = () => {
     return isLogged ? element : <Navigate to="/login" />;
   };
 
+  const HiddenRoute = ({ element }) => {
+    return isLogged ? <Navigate to="/" /> : element;
+  }
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} /> {/* Public Route */}
-        <Route path="/signup" element={<Signup />} /> {/* Public Route */}
-        <Route path="/logout" element={<Logout />} /> {/* Public Route */}
         <Route path="/canvas" element={<Canvas />} /> {/* Public Route */}
         <Route path="/about" element={<About />} /> {/* Public Route */}
-        <Route path="/read" element={<UserFlow />} /> {/* Public Route */}
-        {/* <Route 
-          path="/dashboard" 
-          element={<ProtectedRoute element={<Dashboard />} />} 
-        /> Protected Route */}
+        <Route path="/read" element={<Read />} /> {/* Public Route */}
+        <Route path='/login' element={<HiddenRoute element={<Login />} />} />
+        <Route path='/signup' element={<HiddenRoute element={<Signup />} />} />
+        <Route path="/logout" element={<ProtectedRoute element={<Logout />} />} />
       </Routes>
     </Router>
   );

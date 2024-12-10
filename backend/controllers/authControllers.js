@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 dotenv.config();
 
 const cookieOptions = {
-  httpOnly: true, 
-  secure: process.env.NODE_ENV === 'production', 
-  sameSite: 'strict', 
-  maxAge: 5 * 60 * 60 * 1000, 
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: 5 * 60 * 60 * 1000,
 };
 
 const signUp = async (req, res) => {
@@ -77,7 +77,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    next(); 
+    next();
   } catch (ex) {
     res.cookie('authToken', '', { maxAge: 1 });
     return res.status(400).json({ error: 'Invalid token. Token has been cleared.' });
