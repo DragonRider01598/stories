@@ -12,10 +12,11 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-   origin: process.env.FRONTEND_URL,
-   credentials: true
-}))
+app.use(cors())
+//    cors({
+//    origin: process.env.FRONTEND_URL,
+//    credentials: true
+// }))
 
 app.use('/api/auth', authRoutes);
 app.use('/api/story', storyRoutes);
