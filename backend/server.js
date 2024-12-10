@@ -17,6 +17,7 @@ app.use(cors({
    credentials: true,
    allowedHeaders: ['Content-Type', 'Authorization'],
    credentials: true,
+   sameSite: 'None',
 }))
 
 app.use('/api/auth', authRoutes);
