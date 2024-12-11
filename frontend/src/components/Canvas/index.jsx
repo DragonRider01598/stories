@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ReactFlow, { Controls, Background, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { FlowProvider, FlowContext } from '../../context/FlowContext';
@@ -23,6 +24,7 @@ const FlowCanvas = () => {
   const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange, selected, setSelected } = useContext(FlowContext);
   const [showOptions, setShowOptions] = useState(false);
   const { isLogged } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onConnect = (params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -137,6 +139,22 @@ const FlowCanvas = () => {
     }
   };
 
+  const onRead = () => {
+    let obj = {
+      nodes: nodes.map((node) => ({
+        id: node.id,
+        data: node.data,
+      })),
+      edges: edges.map(({ source, target, id }) => ({
+        source,
+        target,
+        id,
+      })),
+    };
+
+    navigate('/read', { state: { title: "Preview", nodes: obj.nodes, edges: obj.edges } });
+  }
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden bg-gray-900"
@@ -156,16 +174,16 @@ const FlowCanvas = () => {
         defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
       >
         <Controls className="top-1 h-0" />
-        <div className="absolute top-4 right-4 z-10 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+        <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
           <button
             onClick={() => setShowOptions(!showOptions)}
-            className="md:hidden px-6 py-2 bg-gray-800 text-white rounded shadow-lg hover:bg-gray-700 transition duration-200 ease-in-out"
+            className="px-6 py-2 bg-gray-800 text-white rounded shadow-lg hover:bg-gray-700 transition duration-200 ease-in-out"
           >
             Options
           </button>
 
           {/* Buttons are hidden by default on mobile and shown when showOptions is true */}
-          <div className={`${showOptions ? 'flex' : 'hidden'} md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2`}>
+          <div className={`${showOptions ? 'flex' : 'hidden'} flex-col space-y-2`}>
             <button
               onClick={() => addNode()}
               className="px-6 py-2 bg-teal-600 text-white rounded shadow-lg hover:bg-teal-700 transition duration-200 ease-in-out"
@@ -189,6 +207,12 @@ const FlowCanvas = () => {
               className="px-6 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 transition duration-200 ease-in-out"
             >
               Upload Story
+            </button>
+            <button
+              onClick={onRead}
+              className="px-6 py-2 bg-blue-600 text-white rounded shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out"
+            >
+              Preview
             </button>
           </div>
         </div>
